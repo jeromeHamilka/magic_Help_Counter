@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:magic_help_counter/card_provider.dart';
 import 'package:magic_help_counter/change_counter.dart';
+import 'package:magic_help_counter/providers/card_list_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddCreature extends StatefulWidget {
@@ -14,14 +14,14 @@ class _AddCreatureState extends State<AddCreature> {
 
   @override
   Widget build(BuildContext context) {
-    String nom = Provider.of<CardProvider>(context).result;
+    List nom = Provider.of<CardListProvider>(context).cardList;
     return Container(
       padding: const EdgeInsets.all(10),
       child: Row(
         children: [
           Column(
             children: [
-              Text(nom),
+              Text(nom[0]),
               const SizedBox(
                 height: 10,
               ),
