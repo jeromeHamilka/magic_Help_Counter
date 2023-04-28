@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:magic_help_counter/providers/counter_life_provider.dart';
+import 'package:provider/provider.dart';
 
 class CounterPlayer extends StatefulWidget {
   const CounterPlayer({Key? key}) : super(key: key);
@@ -8,53 +10,39 @@ class CounterPlayer extends StatefulWidget {
 }
 
 class _CounterPlayerState extends State<CounterPlayer> {
-  int _counterMe = 20;
-  int _counterAdversaire = 20;
-
-  void _incrementCounterMe() {
-    setState(() {
-      _counterMe++;
-    });
-  }
-
-  void _decrementCounterMe() {
-    setState(() {
-      _counterMe--;
-    });
-  }
-
-  void _incrementCounterAdversaire() {
-    setState(() {
-      _counterAdversaire++;
-    });
-  }
-
-  void _decrementCounterAdversaire() {
-    setState(() {
-      _counterAdversaire--;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Column(
+    int counterPlayer1 =
+        Provider.of<CounterLifeProvider>(context).counterPlayer1;
+    int counterPlayer2 =
+        Provider.of<CounterLifeProvider>(context).counterPlayer2;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Card(
+          shape: const RoundedRectangleBorder(
+            side: BorderSide(
+              color: Colors.black,
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+          ),
           margin: const EdgeInsets.all(15),
           color: Colors.white,
           elevation: 20,
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const Text(
-                "Moi",
+                "Player 1",
                 style: TextStyle(
                   fontSize: 30,
                   color: Colors.blue,
                 ),
               ),
               Text(
-                "Vie: $_counterMe",
+                "Life: $counterPlayer1",
                 style: const TextStyle(
                   fontSize: 30,
                   color: Colors.green,
@@ -65,13 +53,19 @@ class _CounterPlayerState extends State<CounterPlayer> {
                   IconButton(
                     iconSize: 50,
                     color: Colors.green,
-                    onPressed: _incrementCounterMe,
+                    onPressed: () => {
+                      Provider.of<CounterLifeProvider>(context, listen: false)
+                          .incrementCounterPlayer1(),
+                    },
                     icon: const Icon(Icons.add_circle),
                   ),
                   IconButton(
                     iconSize: 50,
                     color: Colors.red,
-                    onPressed: _decrementCounterMe,
+                    onPressed: () => {
+                      Provider.of<CounterLifeProvider>(context, listen: false)
+                          .decrementCounterPlayer1(),
+                    },
                     icon: const Icon(Icons.remove_circle),
                   ),
                 ],
@@ -80,21 +74,29 @@ class _CounterPlayerState extends State<CounterPlayer> {
           ),
         ),
         Card(
+          shape: const RoundedRectangleBorder(
+            side: BorderSide(
+              color: Colors.black,
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(12),
+            ),
+          ),
           margin: const EdgeInsets.all(15),
           color: Colors.white,
           elevation: 20,
-          child: Row(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               const Text(
-                "Adversaire",
+                "Player 2",
                 style: TextStyle(
-                  fontSize: 15,
+                  fontSize: 30,
                   color: Colors.blue,
                 ),
               ),
               Text(
-                "Vie: $_counterAdversaire",
+                "Life: $counterPlayer2",
                 style: const TextStyle(
                   fontSize: 30,
                   color: Colors.green,
@@ -105,13 +107,19 @@ class _CounterPlayerState extends State<CounterPlayer> {
                   IconButton(
                     iconSize: 50,
                     color: Colors.green,
-                    onPressed: _incrementCounterAdversaire,
+                    onPressed: () => {
+                      Provider.of<CounterLifeProvider>(context, listen: false)
+                          .incrementCounterPlayer2(),
+                    },
                     icon: const Icon(Icons.add_circle),
                   ),
                   IconButton(
                     iconSize: 50,
                     color: Colors.red,
-                    onPressed: _decrementCounterAdversaire,
+                    onPressed: () => {
+                      Provider.of<CounterLifeProvider>(context, listen: false)
+                          .decrementCounterPlayer2(),
+                    },
                     icon: const Icon(Icons.remove_circle),
                   ),
                 ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:magic_help_counter/home.dart';
 import 'package:magic_help_counter/providers/card_list_provider.dart';
+import 'package:magic_help_counter/providers/counter_life_provider.dart';
 import 'package:magic_help_counter/widgets/form_card_name_autocomplete.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
@@ -33,6 +34,7 @@ class _CounterMagicState extends State<CounterMagic> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => CardListProvider()),
+        ChangeNotifierProvider(create: (context) => CounterLifeProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

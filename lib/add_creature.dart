@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:magic_help_counter/change_counter.dart';
 import 'package:magic_help_counter/providers/card_list_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -46,12 +45,6 @@ class _AddCreatureState extends State<AddCreature> {
                       fontSize: 22,
                     ),
                   ),
-                ],
-              ),
-              const Row(
-                children: [
-                  ChangeCounter(),
-                  ChangeCounter(),
                 ],
               ),
             ],

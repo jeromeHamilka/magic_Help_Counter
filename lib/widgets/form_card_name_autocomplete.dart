@@ -15,7 +15,12 @@ class FormCardName extends StatefulWidget {
 }
 
 class _FormCardNameState extends State<FormCardName> {
+  final TextEditingController _controllerSearchInput = TextEditingController();
   List<dynamic> _cardName = [];
+
+  String val = "162145";
+  String _uriImageCard = "";
+  List<String> _listUriImageCard = [];
   final CardListProvider cardListProvider = CardListProvider();
 
   Timer? _debounce;
@@ -23,10 +28,13 @@ class _FormCardNameState extends State<FormCardName> {
   Future<void> _searchCardName(String value) async {
     try {
       if (_debounce?.isActive == true) _debounce?.cancel();
-      _debounce = Timer(const Duration(seconds: 2), () async {
+      _debounce = Timer(const Duration(seconds: 1), () async {
         print(value);
         if (value.isNotEmpty) {
           _cardName = await cardListProvider.getAutoCompleteSuggestion(value);
+          if (_cardName.length == 1) {
+            _uriImageCard = await cardListProvider.getNamedCardUri(value);
+          }
           setState(() {});
         }
       });
@@ -35,31 +43,57 @@ class _FormCardNameState extends State<FormCardName> {
     }
   }
 
+  // Future<void> _searchCardImageUri(String value) async {
+  //   try {
+  //     _uriImageCard = await cardListProvider.getNamedCardUri(value);
+  //     //cardListProvider.listUriImageCard.add(_uriImageCard);
+  //     setState(() {});
+  //     //print(_uriImageCard);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+  @override
+  void dispose() {
+    _controllerSearchInput.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<dynamic> cardListView = Provider.of<CardListProvider>(context).cardList;
+    List<dynamic> cardList = Provider.of<CardListProvider>(context).cardList;
+    List<String> listUriImageCardView =
+        Provider.of<CardListProvider>(context).listUriImageCard;
+
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("search new card,"),
+      ),
       body: Column(
         children: [
           const SizedBox(
             width: double.infinity,
-            height: 50,
+            height: 10,
           ),
           Stack(
             children: [
               TextField(
+                controller: _controllerSearchInput,
                 decoration: const InputDecoration(
                   labelText: 'Search card',
                   prefixIcon: Icon(Icons.search),
                 ),
                 onChanged: _searchCardName,
+                //onChanged: (value) => {_searchCardName(value),_searchCardImageUri(value)},
               ),
               Positioned(
                 top: 5,
                 right: 3,
                 child: IconButton(
                   onPressed: () => {
-                    Navigator.pop(context, null),
+                    _controllerSearchInput.text = "",
+                    //Navigator.pop(context, null),
                   },
                   icon: const Icon(Icons.clear),
                 ),
@@ -71,18 +105,36 @@ class _FormCardNameState extends State<FormCardName> {
                 itemCount: _cardName.length,
                 itemBuilder: (_, i) {
                   var cardName = _cardName[i];
+                  var urlImage = _uriImageCard;
                   return ListTile(
-                    leading: const Icon(Icons.content_paste_sharp),
+                    leading: _cardName.length != 1
+                        ? Image.network(
+                            'https://cards.scryfall.io/png/front/4/a/4a2e428c-dd25-484c-bbc8-2d6ce10ef42c.png?1559591808',
+                            width: 30,
+                          )
+                        : Image.network(
+                            urlImage,
+                            width: 100,
+                            //fit: BoxFit.cover,
+                          ),
                     title: Text(cardName),
                     onTap: () => {
-                      print(cardName),
-                      cardListView.add(cardName),
-                      print('valeur de cardProvider.cardList: '),
-                      print(cardListProvider.cardList),
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Home()),
-                      ),
+                      setState(() {
+                        _controllerSearchInput.text = cardName;
+                      }),
+                      _searchCardName(cardName),
+                      if (_cardName.length == 1)
+                        {
+                          print(cardName),
+                          cardList.add(cardName),
+                          print(cardList),
+                          listUriImageCardView.add(urlImage),
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const Home()),
+                          ),
+                        }
                     },
                   );
                 }),
